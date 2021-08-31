@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Staging') {
             steps {
-                sh 'curl -T webapp/target/webapp.war "http://tomcat:jenkins-demo@54.226.143.255:9090/manager/text/deploy?path=/webapp&update=true"'
+                build job: 'deploy-to-staging'
             }    
         }
     }
