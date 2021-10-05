@@ -7,11 +7,22 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                build job: 'packaging'
+                sh 'mvn clean package'
             }
             post {
                 success {
                     echo 'Build successful. Now archiving...'
+                    archiveArtifacts artifacts: '**/target/*.war'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'server/target/surefire-reports/*.xml'
                 }
             }
         }
