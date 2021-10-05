@@ -3,15 +3,16 @@ pipeline {
     tools {
         maven 'localMVN'
     }
-    
+
     stages {
         stage('Build') {
             steps {
-                build job: 'packaging'
+                sh 'mvn clean package'
             }
             post {
                 success {
                     echo 'Build successful. Now archiving...'
+                    archiveArtifacts artifacts: 'webapp/target/*.war'
                 }
             }
         }
@@ -21,14 +22,14 @@ pipeline {
             }
             post {
                 always {
-                    junit 'target/surefire-reports/*.xml'
+                    junit 'server/target/surefire-reports/*.xml'
                 }
             }
         }
         stage('Staging') {
             steps {
-                 build job: 'deploy-to-staging'
-            }    
+                sh 'curl -T webapp/target/webapp.war "http://tomcat:jenkins-demo@54.196.221.152:9090/manager/text/deploy?path=/webapp&update=true"'
+            }
         }
     }
 }
