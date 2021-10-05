@@ -3,7 +3,7 @@ pipeline {
     tools {
         maven 'localMVN'
     }
-    
+
     stages {
         stage('Build') {
             steps {
@@ -12,7 +12,7 @@ pipeline {
             post {
                 success {
                     echo 'Build successful. Now archiving...'
-                    archiveArtifacts artifacts: '**/target/*.war'
+                    archiveArtifacts artifacts: 'webapp/target/*.war'
                 }
             }
         }
@@ -29,7 +29,7 @@ pipeline {
         stage('Staging') {
             steps {
                 sh 'curl -T webapp/target/webapp.war "http://tomcat:jenkins-demo@54.196.221.152:9090/manager/text/deploy?path=/webapp&update=true"'
-            }    
+            }
         }
     }
 }
